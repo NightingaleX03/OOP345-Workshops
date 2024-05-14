@@ -9,6 +9,7 @@ smathew32@myseneca.ca
 */
 
 #include <iostream>
+#include <iomanip>
 
 #ifndef FOODORDER_H
 #define FOODORDER_H
@@ -23,15 +24,16 @@ namespace seneca{
     {
 
     private:
+        int m_counter; // counts number of orders for duration of program
         char m_customerName[11]; // 10 char with null
         char m_orderDescription[26];  // 25 char with null
         double m_price; // cost of order
         char m_dailySpecial; // customer ordered special? yes or no
 
     public:
-        FoodOrder();
-        void read(std::istream& is);
-        void display() const;
+        FoodOrder(); // constructor
+        std::istream& read(std::istream& is); // read function
+        void display() const; // display function
     };
 
 }
