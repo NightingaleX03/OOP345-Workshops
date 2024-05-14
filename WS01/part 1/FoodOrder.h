@@ -15,7 +15,6 @@ smathew32@myseneca.ca
 #define FOODORDER_H
 
 namespace seneca{
-
     // global variables can change day to day
     double g_taxrate;
     double g_dailydiscount;
@@ -35,6 +34,5 @@ namespace seneca{
         std::istream& read(std::istream& is); // read function
         void display() const; // display function
     };
-
 }
 #endif // FOODORDER_H

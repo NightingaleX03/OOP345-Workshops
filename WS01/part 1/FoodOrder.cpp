@@ -12,7 +12,6 @@ smathew32@myseneca.ca
 #include "FoodOrder.h"
 
 namespace seneca{
-
     // constructor to set customerName, description, price and daily special to default values
     FoodOrder::FoodOrder(){
         m_counter = 0;
