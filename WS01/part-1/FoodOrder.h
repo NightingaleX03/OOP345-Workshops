@@ -11,21 +11,22 @@ smathew32@myseneca.ca
 #include <iostream>
 #include <iomanip>
 
-#ifndef FOODORDER_H
-#define FOODORDER_H
+#ifndef SENECA_FOODORDER_H
+#define SENECA_FOODORDER_H
+
+// global variables can change day to day
+double g_taxrate;
+double g_dailydiscount;
 
 namespace seneca{
-    // global variables can change day to day
-    double g_taxrate;
-    double g_dailydiscount;
 
     class FoodOrder
     {
 
     private:
         int m_counter; // counts number of orders for duration of program
-        char m_customerName[11]; // 10 char with null
-        char m_orderDescription[26];  // 25 char with null
+        char m_customerName[10]; // 10 char with null
+        char m_orderDescription[25];  // 25 char with null
         double m_price; // cost of order
         char m_dailySpecial; // customer ordered special? yes or no
 
