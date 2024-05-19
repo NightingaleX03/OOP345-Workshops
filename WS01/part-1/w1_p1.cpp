@@ -1,3 +1,12 @@
+/*
+I declare that this submission is the result of my own work and I only copied the code that 
+my professor provided to complete my workshops and assignments. This submitted piece of work 
+has not been shared with any other student or 3rd party content provider.
+
+Sarah Mathew
+smathew32@myseneca.ca
+140903238
+*/
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -6,7 +15,7 @@
 
 // Cheching if header guards exist and follow convention.
 #ifndef SENECA_FOODORDER_H
-#define SENECA_FOODORDER_H // added in line
+#define SENECA_FOODORDER_H // added this line
     #error "The header guard for 'FoodOrder.h' doesn't follow the convention!"
 #endif
 
@@ -26,7 +35,7 @@ int cout = 0; // won't compile if headers don't follow convention regarding name
 
 // TODO: write the prototype for the main function
 //         to accept command line arguments
-int main (int argc, char* argv[], char* env[])
+int main (int argc, char* argv[])
 {
 	std::cout << "Command Line:\n";
 	std::cout << "--------------------------\n";
@@ -37,7 +46,7 @@ int main (int argc, char* argv[], char* env[])
 	//   ...
 
 	for(int i = 0; i < argc; i++){
-		std::cout << argv[i] << std::endl;
+		std::cout << "  "<< i + 1 << ": " << argv[i] << std::endl;
 	}
 
 

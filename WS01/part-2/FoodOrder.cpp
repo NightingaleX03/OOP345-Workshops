@@ -27,13 +27,13 @@ namespace seneca{
     }
 
     std::istream& FoodOrder::read(std::istream& is){
-        char orderType;
 
-        if(is){ // if function is in good state it will read file
-            m_counter++;
+        if(is.good()){ // if function is in good state it will read file
+            char orderType;
             is >> orderType; // take order type
-            is.ignore(1,','); // ignore comma
+            is.ignore(); // ignore comma
 
+            m_counter++;
             is.getline(m_customerName, 10, ',');
             is.getline(m_orderDescription, 25, ',');
             is >> m_price;
@@ -47,23 +47,18 @@ namespace seneca{
 
     void FoodOrder::display() const{
         static int counter = 1; // static counter to keep track of number of orders
-
-        double tax = m_price * (1 + g_taxrate); // calculate tax
-
-        std::cout << std::left << std::setw(2) << counter << ". "; 
-
         if(m_customerName[0] == '\0'){ // if customer name is not available there was no order placed
-            std::cout <<"No Order" << std::endl;
+            std::cout << counter + " . No Order" << std::endl;
         }
         
         else{
-            std::cout 
-                << std::setw(10) << m_customerName << "|" // display customer name
-                << std::setw(25) << m_orderDescription << "|" // display order description
-                << std::setw(12) << std::fixed << std::setprecision(2) << tax << "|"; // display price with tax
+            std::cout << counter << ". " 
+                << std::left << std::setw(10) << m_customerName << "|" // display customer name
+                << std::left << std::setw(25) << m_orderDescription << "|" // display order description
+                << std::left << std::setw(12) << std::fixed << std::setprecision(2) << m_price * (1 + g_taxrate); // display price with tax
 
             if (m_dailySpecial == 'Y') { // if daily special is ordered apply discount
-                std::cout << std::right << std::setw(13) << tax + (tax * (1 - g_dailydiscount)); // price displayed with discount
+                std::cout << std::right << std::setw(12) << std::fixed << std::setprecision(2) << m_price * (1 + g_taxrate) * (1 - g_dailydiscount); // price displayed with discount
             } 
 
             std::cout << std::endl;
