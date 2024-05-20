@@ -27,12 +27,9 @@ namespace seneca{
     }
 
     std::istream& FoodOrder::read(std::istream& is){
-        char orderType;
 
         if(is){ // if function is in good state it will read file
             m_counter++;
-            is >> orderType; // take order type
-            is.ignore(1,','); // ignore comma
 
             is.getline(m_customerName, 10, ',');
             is.getline(m_orderDescription, 25, ',');
@@ -49,7 +46,7 @@ namespace seneca{
         static int counter = 1; // static counter to keep track of number of orders
 
         double tax = m_price * (1 + g_taxrate); // calculate tax
-
+        float discount =  tax - g_dailydiscount; // calculate discount
         std::cout << std::left << std::setw(2) << counter << ". "; 
 
         if(m_customerName[0] == '\0'){ // if customer name is not available there was no order placed
@@ -63,7 +60,7 @@ namespace seneca{
                 << std::setw(12) << std::fixed << std::setprecision(2) << tax << "|"; // display price with tax
 
             if (m_dailySpecial == 'Y') { // if daily special is ordered apply discount
-                std::cout << std::right << std::setw(13) << tax + (tax * (1 - g_dailydiscount)); // price displayed with discount
+                std::cout << std::right << std::setw(13) << discount; // price displayed with discount
             } 
 
             std::cout << std::endl;
