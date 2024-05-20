@@ -26,17 +26,54 @@ namespace seneca{
         m_dailySpecial = 'N';
     }
 
-    std::istream& FoodOrder::read(std::istream& is){
+    // destructor 
+    FoodOrder::~FoodOrder(){
+        delete[] m_orderDescription; // deallocate memory
+    } 
 
+    // copy constructor
+    FoodOrder::FoodOrder(const FoodOrder& other): m_price(other.m_price), m_dailySpecial(other.m_dailySpecial){
+        strcpy(m_customerName, other.m_customerName);
+        m_orderDescription = new char[strlen(other.m_customerName) + 1]; // allocate memory
+        strcpy(m_orderDescription, other.m_orderDescription);
+    }
+
+    // copy assignment operator
+    FoodOrder& FoodOrder::operator=(const FoodOrder& other){
+        if(this != &other){ 
+
+            delete[] m_orderDescription; // deallocate memory
+
+            // other values entered into object
+            strcpy(m_customerName, other.m_customerName);
+            m_price = other.m_price;
+            m_dailySpecial = other.m_dailySpecial;
+
+            // allocating descirption memory
+            m_orderDescription = new char[strlen(other.m_customerName) + 1]; 
+            strcpy(m_orderDescription, other.m_orderDescription);
+
+        }
+
+        return *this; // return object
+    }
+    
+
+    std::istream& FoodOrder::read(std::istream& is){
+        char temp[25];
         if(is){ // if function is in good state it will read file
+            delete[] m_orderDescription;
             m_counter++;
 
             is.getline(m_customerName, 10, ',');
-            is.getline(m_orderDescription, 25, ',');
+            is.getline(temp, 10, ',');
             is >> m_price;
             is.ignore();
             is >> m_dailySpecial;
             is.ignore();
+
+            m_orderDescription = new char[strlen(temp) + 1]; 
+            strcpy(m_orderDescription, temp);
         }
 
         return is; // return is object

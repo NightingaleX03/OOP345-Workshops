@@ -26,12 +26,17 @@ namespace seneca{
     {
         int m_counter; // counts number of orders for duration of program
         char m_customerName[10]; // 10 char with null
-        char m_orderDescription[25];  // 25 char with null
+        char* m_orderDescription;  // 25 char with null
         double m_price; // cost of order
         char m_dailySpecial; // customer ordered special? yes or no
 
     public:
         FoodOrder(); // constructor
+        ~FoodOrder(); // destructor
+
+        FoodOrder(const FoodOrder& other); // copy constructor
+        FoodOrder& operator=(const FoodOrder& other); // copy assignment operator
+
         std::istream& read(std::istream& is); // read function
         void display() const; // display function
     };
