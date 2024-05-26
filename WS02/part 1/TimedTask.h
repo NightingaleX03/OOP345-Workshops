@@ -21,15 +21,16 @@ namespace seneca{
 
     static const int MAX_TASKS = 10;
 
-    struct Task
-    {
-        std::string m_taskName;
-        std::string m_units;
-        std::chrono::steady_clock::time_point m_duration;
-    };
-
     class TimedTask
     {
+
+        struct Task
+        {
+            std::string m_taskName;
+            std::string m_units;
+            std::chrono::nanoseconds m_duration;
+        };
+
         int m_numTasks;
         std::chrono::steady_clock::time_point m_startTime;
         std::chrono::steady_clock::time_point m_endTime;
@@ -39,7 +40,7 @@ namespace seneca{
         TimedTask();
         void startClock();
         void stopClock();
-        void addTask();
+        void addTask(const char* taskName);
         friend std::ostream &operator<<(std::ostream &os, const TimedTask &timedTask);
     };
 }
