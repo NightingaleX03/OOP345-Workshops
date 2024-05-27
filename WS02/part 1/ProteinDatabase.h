@@ -8,10 +8,6 @@ smathew32@myseneca.ca
 140903238
 */
 
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <cstring>
 #include <istream>
 #include <string>
 
@@ -24,7 +20,7 @@ namespace seneca{
 
     class ProteinDatabase
     {
-        
+        // private member variables
         std::string* m_proteins;
         size_t m_numProteins;
 

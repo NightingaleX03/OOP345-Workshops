@@ -19,11 +19,13 @@ smathew32@myseneca.ca
 
 namespace seneca{
 
+    // global constant
     static const int MAX_TASKS = 10;
 
     class TimedTask
     {
-
+        
+        // define struct Task with name, units and duration
         struct Task
         {
             std::string m_taskName;
@@ -31,6 +33,7 @@ namespace seneca{
             std::chrono::nanoseconds m_duration;
         };
 
+        // private member variables
         int m_numTasks;
         std::chrono::steady_clock::time_point m_startTime;
         std::chrono::steady_clock::time_point m_endTime;
