@@ -12,17 +12,32 @@ smathew32@myseneca.ca
 #include <iomanip>
 #include <fstream>
 #include <cstring>
+#include <istream>
+#include <string>
+
+#include "TimedTask.h"
 
 #ifndef SENECA_PROTEINDATABASE_H
 #define SENECA_PROTEINDATABASE_H
 
 namespace seneca{
 
-    class FoodOrder
+    class ProteinDatabase
     {
         
+        std::string* m_proteins;
+        size_t m_numProteins;
+
     public:
-       
+        ProteinDatabase();
+        ProteinDatabase(const char* filename);
+        ~ProteinDatabase();
+        size_t size();
+        std::string operator[](size_t);
+
+        // helper functions
+        size_t countProtein(const char* filename);
+        void storeProteins(const char* filename);
     };
 }
 #endif // SENECA_PROTEINDATABASE_H
