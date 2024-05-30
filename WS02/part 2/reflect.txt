@@ -1,0 +1,15 @@
+/*
+I declare that this submission is the result of my own work and I only copied the code that 
+my professor provided to complete my workshops and assignments. This submitted piece of work 
+has not been shared with any other student or 3rd party content provider.
+
+Sarah Mathew
+smathew32@myseneca.ca
+140903238
+*/
+
+During the WS2 P1 and 2 I had a lot of trouble with dynamic memory and submitting my project overall. I've ran into numerous dynamic memory errors even tho I had to correct output, so majority of my time was spent trying to fix them.
+
+However during the workshop I've learned there is a significant time different between the copy and move operations and this is because copy consturcotrs then to create a copy of an exisitng object whereas move constructors take control of the previous resources from old objects, etc. This allows for better useage of memory and less runtime as more space doesn't needed to be created with the copy consturctors. Therefore I've noticed that using move constructors provide better effieceny in coding. 
+
+Overall this lab has helped me slowly learn more about move consturctors and operators, and I hope to continue to expand my learning about this more with better research in the future and more programs. 

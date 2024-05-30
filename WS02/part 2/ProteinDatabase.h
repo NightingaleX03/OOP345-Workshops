@@ -27,16 +27,15 @@ namespace seneca{
     public:
         ProteinDatabase();
         ProteinDatabase(const char* filename);
+        ProteinDatabase(ProteinDatabase&& other);
         ~ProteinDatabase();
-        ProteinDatabase(ProteinDatabase&& other) noexcept;
         size_t size();
         std::string operator[](size_t);
-        ProteinDatabase& operator=(ProteinDatabase&& other) noexcept;
+        ProteinDatabase& operator=(ProteinDatabase&& other);
 
         // helper functions
         size_t countProtein(const char* filename);
         void storeProteins(const char* filename);
-
     };
 }
 #endif // SENECA_PROTEINDATABASE_H

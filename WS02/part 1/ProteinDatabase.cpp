@@ -12,27 +12,22 @@ smathew32@myseneca.ca
 namespace seneca{
 
     // constructor
-    ProteinDatabase::ProteinDatabase(){
-        m_numProteins = 0;
-        m_proteins = nullptr;
-    }
+    ProteinDatabase::ProteinDatabase(): m_proteins(nullptr), m_numProteins(0){}
     
-    ProteinDatabase::ProteinDatabase(const char* filename){
-
+    ProteinDatabase::ProteinDatabase(const char* filename): m_numProteins(0){
+        m_proteins = nullptr;
         m_numProteins = countProtein(filename); // count number of proteins
         if(m_numProteins > 0){
             m_proteins = new std::string[m_numProteins]; // allocate memory
             storeProteins(filename); // store proteins in array
         }
-        else{
-            m_proteins = nullptr; // set to nullptr
-        }
 
     }
-    
-    ProteinDatabase::~ProteinDatabase(){
-        delete[] m_proteins; // deallocate memory
-        m_proteins = nullptr;
+
+    // move assignment constructor
+    ProteinDatabase::ProteinDatabase(ProteinDatabase&& other) : m_proteins(other.m_proteins), m_numProteins(other.m_numProteins) {
+        other.m_proteins = nullptr;
+        other.m_numProteins = 0;
     }
     
     size_t ProteinDatabase::size(){
@@ -43,6 +38,21 @@ namespace seneca{
         if (size < m_numProteins){
             return m_proteins[size]; // return protein at index
         }
+        else{
+            return ""; // return empty string
+        }
+    }
+
+    // move assignment operator
+    ProteinDatabase& ProteinDatabase::operator=(ProteinDatabase&& other){
+        if(this != &other){
+            delete[] m_proteins; // deallocate memory
+            m_proteins = other.m_proteins;
+            m_numProteins = other.m_numProteins; 
+            other.m_proteins = nullptr; 
+            other.m_numProteins = 0; 
+        }
+        return *this; // return object
     }
 
     size_t ProteinDatabase::countProtein(const char* filename){
@@ -53,17 +63,16 @@ namespace seneca{
             std::string line;
 
             while(std::getline(file, line)){ // reads every line in file
-
-                if(line[0] == '>'){ // checks if line starts with '>'
+                if(!line.empty() && line[0] == '>'){ // checks if line starts with '>'
                     count++;
                 }
             }
+            file.close(); // close file
         } // end of if statement
         else{
             std::cerr << "Error! Unable to open file: " << filename << std::endl; // error statement
         }
 
-        file.close(); // close file
         return count; // return count
     }
 
@@ -85,17 +94,16 @@ namespace seneca{
                     readingSequence = true;
                 }
 
-                else if(readingSequence){ // checks if reading sequence
+                else if(readingSequence && lineNum < m_numProteins){ // checks if reading sequence
                     m_proteins[lineNum] += line;
                 }
             }
+            file.close(); // close file
         } // end of if statement
 
         else{
             std::cerr << "Error! Unable to open file: " << filename << std::endl; // error statement
         }
-
-        file.close(); // close file
     }
 
 }
