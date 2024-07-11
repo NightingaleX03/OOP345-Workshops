@@ -1,3 +1,13 @@
+/*
+I declare that this submission is the result of my own work and I only copied the code that 
+my professor provided to complete my workshops and assignments. This submitted piece of work 
+has not been shared with any other student or 3rd party content provider.
+
+Sarah Mathew
+smathew32@myseneca.ca
+140903238
+*/
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -56,23 +66,28 @@ int main(int argc, char** argv)
 		//                exit from application with error code "AppErrors::CannotOpenFile"
 
 
-		size_t count = 0;
+		std::ifstream file(argv[1]);
 
-		std::ifstream bookFile(argv[1]);
-		if(!bookFile){
-			std::cerr << "ERROR: Cannot Open File " << argv[1] << "\n";
+		//if file doesn't exist
+		if (!file) {
+			std::cerr << "File cannot be opened";
 			exit(AppErrors::CannotOpenFile);
 		}
 
-		std::string line;
-		while (std::getline(bookFile, line)){
-			if (line.empty() || line[0] == '#'){
-				continue;
-			
-				library += seneca::Book(line);
+		std::string strBook;
+		size_t cnt = 0;
+
+		//get lines of books from file
+		do {
+			std::getline(file, strBook);
+			if (file) {
+				if (!strBook.empty() && strBook[0] != '#') {
+					library += strBook;
+					cnt++;
+				}
 			}
 
-		}
+		} while (file && cnt < 4);
 		
 
 		/*
@@ -86,16 +101,22 @@ int main(int argc, char** argv)
 
 		// TODO: add the rest of the books from the file.
 
-		while (std::getline(bookFile, line)) {
-    		if (line.empty() || line[0] == '#') {
-        		continue; // skip empty lines and comment lines
-    		}
+		//get lines of books
+		do {
+			
+			std::getline(file, strBook);
+			
+			if (file) {
+				
+				if (!strBook.empty() && strBook[0] != '#'){
+					library += strBook;
+					cnt++;
+				}
+			}
 
-    		library += seneca::Book(line); // add the book to the library
-		}
+		} while (file);
 
-		bookFile.close();
-
+		file.close();
 
 	}
 	else
@@ -115,17 +136,16 @@ int main(int argc, char** argv)
 	//            multiply the price with "gbpToCadRate" and save the new price in the book object
 
 
-	auto fixBookPrice = [=](seneca::Book& book){
+	auto newPrice = [&](seneca::Book &book) {
 		// checking if book was published in US
-		if(book.country() == "US"){
+		if (book.country() == "US") {
 			book.price() *= usdToCadRate;
-		}
 		// checking if book was published in UK between 1990 and 1999
-		else if(book.country() == "UK" && book.year() >= 1990 && book.year() <= 1999){
+		} else if (book.country() == "UK" && book.year() >= 1990 && book.year() <= 1999) {
 			book.price() *= gbpToCadRate;
 		}
 	};
-
+	
 	std::cout << "-----------------------------------------\n";
 	std::cout << "The library content\n";
 	std::cout << "-----------------------------------------\n";
@@ -135,9 +155,9 @@ int main(int argc, char** argv)
 	// TODO (from part #1): iterate over the library and update the price of each book
 	//         using the lambda defined above.
 
-	for(size_t i=0; i < 7; i++){
-		fixBookPrice(library[i]);
-	}
+	for(size_t i =0; i< library.size(); i++){
+     	newPrice(library[i]);
+ 	}
 
 	std::cout << "-----------------------------------------\n";
 	std::cout << "The library content (updated prices)\n";
@@ -156,23 +176,29 @@ int main(int argc, char** argv)
 		//       - lines that start with "#" are considered comments and should be ignored
 
 
-		size_t count = 0;
-		std::ifstream movieFile(argv[2]);
-		if(!movieFile){
-			std::cerr << "ERROR: Cannot Open File " << argv[1] << "\n";
+		std::ifstream file(argv[2]);
+		
+		//if file doesn't open
+		if (!file) {
+			std::cerr << "File cannot be opened";
 			exit(AppErrors::CannotOpenFile);
 		}
 
-		std::string line;
-		
-		int count = 0;
-		while (std::getline(movieFile, line) && count < 5) {
-    		if (line.empty() || line[0] == '#') {
-        		continue;
-    		}
+		std::string strMovie;
+		size_t cnt = 0;
 
-    		movies[count++] = seneca::Movie(line);
-		}
+		// get lines for movies
+		do {
+			std::getline(file, strMovie);
+			if (file) {
+				if (!strMovie.empty() && strMovie[0] != '#') {
+					movies[cnt] = strMovie;
+					cnt++;
+				}
+			}
+
+		} while (file && cnt < 5);
+		file.close();
 
 	}
 
@@ -205,13 +231,12 @@ int main(int argc, char** argv)
 		//** EXCEPTION: ERROR_MESSAGE<endl>
 		//         where ERROR_MESSAGE is extracted from the exception object.
 		
-		try{
-
+		try {
 			for (auto i = 0u; i < 10; ++i)
 				std::cout << theCollection[i];
 		}
-		catch(const std::out_of_range& ex){
-			std::cout << "ERROR_MESSAGE: " << ex.what() << "\n";
+		catch (std::out_of_range& exception){
+			std::cout<< "** EXCEPTION: "<<exception.what()<<std::endl;
 		}
 
 	std::cout << "-----------------------------------------\n\n";
@@ -228,7 +253,7 @@ int main(int argc, char** argv)
 			//** EXCEPTION: ERROR_MESSAGE<endl>
 			//         where ERROR_MESSAGE is extracted from the exception object.
 			
-			try{
+			try {
 				seneca::SpellChecker sp(argv[i]);
 				for (auto j = 0u; j < library.size(); ++j)
 					library[j].fixSpelling(sp);
@@ -237,9 +262,9 @@ int main(int argc, char** argv)
 				for (auto j = 0u; j < theCollection.size(); ++j)
 					theCollection[j].fixSpelling(sp);
 				sp.showStatistics(std::cout);
-			}
-			catch (const char* error){
-				std::cout << "ERROR_MESSAGE: " << error << "\n";
+
+			} catch (const char* exception) {
+				std::cout << "** EXCEPTION: " << exception << std::endl;
 			}
 	}
 	if (argc < 3) {

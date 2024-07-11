@@ -8,124 +8,123 @@ smathew32@myseneca.ca
 140903238
 */
 
-#include <iostream>
-#include <iomanip>
-#include <string>
-#include <fstream>
 
 #ifndef SENECA_COLLECTION_H
 #define SENECA_COLLECTION_H
 
+#include <iostream>
+#include <vector>
+#include <string>
 
-namespace seneca{
+namespace seneca {
 
-    // templated class 
+    // Collection class template
     template<typename T>
-    class Collection{
-        // private members
-        std::string m_name;
-        std::vector<T> m_items;
-        size_t m_size;
-        void (*m_observer)(const Collection&, const T&);
-    
-    public:
+    class Collection {
+        std::string m_name {};
+        T* m_items {};
+        size_t m_size {};
+        void (*m_observer)(const Collection<T>&, const T&);
 
-        // public members
-        Collection(const std::string& name);
+    public:
+        // constructor
+        Collection(const std::string& name){
+            m_name = name;
+            m_items = nullptr;
+            m_size = 0;
+            m_observer = nullptr;
+        }
         // destructor
-        ~Collection();
+        virtual ~Collection(){
+            delete[] m_items;
+        }
 
         // deleted copy constructor and assignment operator
-        Collection(const Collection<T>&) = delete;
-        Collection<T>& operator=(const Collection<T>&) = delete;
+        Collection(const Collection&)=delete;
+        Collection& operator=(const Collection&)= delete;
+        Collection(Collection&& collection) = delete;
+        Collection& operator=(Collection&& collection) = delete;
 
-        const std::string& name() const;
-        size_t size() const;
-
-        // member function to set observer
-        void setObserver(void (*observer)(const Collection<T>&, const T&));
-        // overloaded operator to add item to collection
-        Collection<T>& operator+=(const T& item);
-        T& operator[](size_t idx) const;
-        T* operator[](const std::string& title) const;
-
-        // friend operator to display collection
-        friend std::ostream& operator<<(std::ostream& os, const Collection<T>& collection);
-    };
-
-    //template constructor 
-    template<typename T>
-    Collection<T>::Collection(const std::string& name): m_name(name), m_size(0), m_observer(nullptr){
-    }
-
-    //template destructor
-    template<typename T>
-    Collection<T>::~Collection(){
-    }
-
-    //template member functions
-    template<typename T>
-    const std::string& Collection<T>::name() const{
-        return m_name;
-    }
-
-    template<typename T>
-    size_t Collection<T>::size() const{
-        // return size
-        return m_size;
-    }
-
-    template<typename T>
-    void setObserver(void (*observer)(const Collection<T>&, const T&)){
-        // set observer
-        m_observer = observer;
-    }
-
-    template<typename T>
-    Collection<T>& Collection<T>::operator+=(const T& item){
-        // add item to collection
-        m_items.push_back(item);
-        m_size++;
-        if(m_observer != nullptr){
-            m_observer(*this, item);
+        // member functions
+        const std::string& name() const{
+            return m_name;
+        }
+        size_t size() const{
+            return m_size;
         }
 
-        // return collection
-        return *this;
-    }
+        //operator functions
+        void setObserver(void (*observer)(const Collection<T>&, const T&)){
+            m_observer = observer;
+        }
 
-    template<typename T>
-    T& Collection<T>::operator[](size_t idx) const{
-        // return item at index
-        if(idx < m_size){
+        //overloaded operator
+        Collection<T>& operator+=(const T& item){
+            bool exists = false;
+            T* temp;
+
+            //check if item already exists
+            for(size_t i = 0; i < m_size; i++){
+                if(m_items[i].title() == item.title()){
+                    exists = true;
+                }
+            }
+
+            //if item does not exist, add it to the collection
+            if(!exists){
+                temp = new T[m_size + 1];
+                for(size_t i = 0; i < m_size; i++){
+                    temp[i] = m_items[i];
+                }
+
+                temp[m_size] = item;
+
+                delete[] m_items;
+                m_items = temp;
+                m_size++;
+
+                if(m_observer){
+                    m_observer(*this, item);
+                }
+            }
+            //return the collection
+            return *this;
+        }
+
+        //overloaded operator
+        T& operator[](size_t idx) const{
+            //check if index is out of range
+            if (idx >= m_size) {
+                throw std::out_of_range("Bad index [" + std::to_string(idx) + "]. Collection has [" + std::to_string(m_size) +"] items.");
+            }
             return m_items[idx];
         }
-    }
 
-    template<typename T>
-    T* Collection<T>::operator[](const std::string& title) const{
-        // return item with title
-        for(size_t i = 0; i < m_size; i++){
-            if(m_items[i].title() == title){
-                return &m_items[i];
+        //overloaded operator
+        T* operator[](const std::string& title) const{
+
+            T* item = nullptr;
+
+            //find the item with the title
+            for(size_t i = 0; i < m_size; i++){
+                if(m_items[i].title() == title){
+                    item = &m_items[i];
+                }
             }
+            
+            return item;
         }
-        // return nullptr if not found
-        return nullptr;
-    }
+    };
 
-    template<typename T>
+    //templated function
+    template <typename T>
     std::ostream& operator<<(std::ostream& os, const Collection<T>& collection){
-        // display collection
-        os << "------------------------------------------" << std::endl;
-        os << collection.name() << " Collection" << std::endl;
-        os << "------------------------------------------" << std::endl;
+        //display the collection
         for(size_t i = 0; i < collection.size(); i++){
             os << collection[i];
         }
-        os << "------------------------------------------" << std::endl;
         return os;
     }
-
 }
+
 #endif // SENECA_COLLECTION_H

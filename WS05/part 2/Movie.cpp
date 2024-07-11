@@ -18,35 +18,35 @@ namespace seneca{
 
     // constructor with reading lines from each movie using helper function
     Movie::Movie(const std::string& strMovie){
-        size_t start = 0;
-        m_title = getInformation(strMovie, start);
-        m_yearRelease = std::stoi(getInformation(strMovie, start));
-        m_description = getInformation(strMovie, start);
+        size_t start =0;
+        size_t end= strMovie.find(',');
+
+        m_title=strMovie.substr(start,(end-start));
+        m_title.erase(0,strMovie.find_first_not_of(" \t\r\n"));
+        m_title.erase(m_title.find_last_not_of(" \t\r\n") + 1);
+
+        start=end + 1;
+        end=strMovie.find(',',start);
+
+
+        m_yearRelease=stod(strMovie.substr(start,(end-start)));
+
+
+        start=end + 1;
+        end=strMovie.find('\n',start);
+
+
+        m_description= strMovie.substr(start,(end-start));
+        m_description.erase(0, m_description.find_first_not_of(" \t\r\n"));
+        m_description.erase(m_description.find_last_not_of(" \t\r\n")+1);
     }
 
     // overloaded operator to display movie information
     std::ostream& operator<<(std::ostream& os, const Movie& movie){
-        os << std::left << std::setw(40) << movie.m_title << " | ";
+        os << std::right << std::setw(40) << movie.m_title << " | ";
         os << std::right << std::setw(4) << movie.m_yearRelease << " | ";
         os << movie.m_description << std::endl;
         return os;
     }
 
-    // helper function to get information from each movie
-    std::string getInformation(const std::string& str, size_t& start, const std::string& line){
-        // get the information from the string
-        size_t end = line.find(line, start);
-        std::string info = str.substr(start, (end == std::string::npos) ? end : end - start);
-
-        // update the start position
-        start = (end == std::string::npos) ? end : end + 1;
-
-        // remove any leading or trailing spaces
-        size_t startRead = info.find_first_not_of(" ");
-        size_t endRead = info.find_last_not_of(" ");
-        info = (startRead == std::string::npos) ? "" : info.substr(startRead, endRead - startRead + 1);
-    
-        // return the information
-        return info;
-    }
 }

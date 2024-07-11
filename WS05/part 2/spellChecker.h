@@ -18,13 +18,19 @@ smathew32@myseneca.ca
 
     namespace seneca{
         class SpellChecker{
-            std::string m_badWords[6];
-            std::string m_goodWords[6];
+            // private members
+            std::string m_badWords[6] {};
+            std::string m_goodWords[6] {};
             int m_replacementCounts[6] = {0};
 
         public:
+            //constructor
+            SpellChecker();
+            //constructor with reading bad and good words from the file
             SpellChecker(const char* filename);
+            //operator to replace the bad words with good words
             void operator()(std::string& text);
+            //function to display the statistics
             void showStatistics(std::ostream& out) const;
         };
     }

@@ -20,19 +20,17 @@ smathew32@myseneca.ca
 
         class Movie{
             // private members
-            std::string m_title;
-            size_t m_yearRelease;
-            std::string m_description;
+            std::string m_title {};
+            size_t m_yearRelease {};
+            std::string m_description {};
 
         public:
 
             // public members
             Movie(); // default constructor
             Movie(const std::string& strMovie); // constructor with reading lines from each movie using helper function
+            const std::string& title() const { return m_title; };
 
-            // member functions using lambda expression
-            std::string title() const { return m_title; }; 
-            auto year() -> const size_t { return m_yearRelease; };
 
             // overloaded operator to display movie information
             friend std::ostream& operator<<(std::ostream& os, const Movie& movie);
@@ -40,17 +38,11 @@ smathew32@myseneca.ca
 
             //templated function
             template<typename T>
-            void fixSpelling(T spellChecker){
-                spellChecker(m_title);
+            void fixSpelling(T& spellChecker){
                 spellChecker(m_description);
+                spellChecker(m_title);
             }
-
-            // helper functions
-            std::string getInformation(const std::string& str, size_t& start, const std::string& line = ",");
         };
-
-        // overloaded operator to display movie information
-        std::ostream& operator<<(std::ostream& os, const Movie& movie);
 
     }
 #endif // SENECA_MOVIE_H
