@@ -18,7 +18,9 @@ namespace seneca{
 
     class File : public Resource{
     
+        std::string m_name;
         std::string m_contents;
+        std::string m_parent_path;
 
         File(const File&) = delete;
         File& operator=(const File&) = delete;
@@ -27,9 +29,9 @@ namespace seneca{
     
     public:
     
-        File(const std::string& name, const std::string& contents);
+        File(const std::string& name, const std::string& contents = "");
     
-        void update_parent_path(const std::string&) override;
+        void update_parent_path(const std::string& path) override;
     
         NodeType type() const override;
     

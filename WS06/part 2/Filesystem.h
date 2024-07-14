@@ -1,7 +1,7 @@
 /*
 I declare that this submission is the result of my own work and I only copied the code that 
-my professor provided to complete my workshops and assignments. I've used the help of Chatgpt
-to help submit the second part of this workshop
+my professor provided to complete my workshops and assignments. This submitted piece of work 
+has not been shared with any other student or 3rd party content provider.
 
 Sarah Mathew
 smathew32@myseneca.ca
@@ -17,6 +17,8 @@ smathew32@myseneca.ca
 #include "File.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
+#include <algorithm>
 
 namespace seneca{
 
@@ -25,8 +27,10 @@ namespace seneca{
         Directory* m_root;
         Directory* m_current;
 
+        std::string trim(const std::string& str);
+
     public:
-        Filesystem(const std::string& file, const std::string& path);
+        Filesystem(const std::string& file, const std::string& path = "");
 
         Filesystem(const Filesystem&) = delete;
         Filesystem& operator=(const Filesystem&) = delete;
@@ -34,15 +38,14 @@ namespace seneca{
         Filesystem(Filesystem&& other) noexcept;
         Filesystem& operator=(Filesystem&& other) noexcept;
 
-        Filesystem& operator+=(Resource*);
+        Filesystem& operator+=(Resource* resource);
 
-        Directory* change_directory(const std::string&);
+        Directory* change_directory(const std::string& path = "");
 
         Directory* get_current_directory() const;
 
         ~Filesystem();
 
-        std::string trim(const std::string& str);
     };
 
 }

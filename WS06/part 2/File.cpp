@@ -12,8 +12,9 @@ smathew32@myseneca.ca
 
 namespace seneca{
 
-    File::File(const std::string& name, const std::string& contents): m_contents(contents), Resource(){
+    File::File(const std::string& name, const std::string& contents): m_contents(contents){
         m_name = name;
+        m_parent_path = "";
     }
 
     void File::update_parent_path(const std::string& path){
@@ -26,7 +27,7 @@ namespace seneca{
     
     std::string File::path() const{
 
-        return m_parent_path;
+        return m_parent_path.empty() ? m_name : m_parent_path + "/" + m_name;
     }
 
     std::string File::name() const{

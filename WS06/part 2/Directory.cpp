@@ -1,7 +1,7 @@
 /*
 I declare that this submission is the result of my own work and I only copied the code that 
-my professor provided to complete my workshops and assignments. I've used the help of Chatgpt
-to help submit the second part of this workshop
+my professor provided to complete my workshops and assignments. This submitted piece of work 
+has not been shared with any other student or 3rd party content provider.
 
 Sarah Mathew
 smathew32@myseneca.ca
@@ -18,11 +18,11 @@ namespace seneca{
     }
     
     // update the parent path
-    void Directory::update_parent_path(const std::string& path){
-        m_parent_path = path;
+    void Directory::update_parent_path(const std::string& parentPath){
+        m_parent_path = parentPath;
         // update the parent path for all resources
         for(auto& resource : m_contents){
-            resource->update_parent_path(this->path());
+            resource->update_parent_path(path());
         }
     }
 
@@ -43,7 +43,7 @@ namespace seneca{
     
     // return the number of resources in the directory
     int Directory::count() const{
-        return m_contents.size();
+        return static_cast<int>(m_contents.size());
     }
 
     // return the size of the directory
@@ -51,7 +51,7 @@ namespace seneca{
         size_t total = 0;
 
         // calculate the total size of the directory
-        for(auto& resource : m_contents){
+        for(auto resource : m_contents){
             total += resource->size();
         }
         return total;
@@ -60,20 +60,15 @@ namespace seneca{
     // add a resource to the directory
     Directory& Directory::operator+=(Resource* resource){
 
-        // check if resource already exists
-        auto duplicate = std::find_if(m_contents.begin(), m_contents.end(), [&](Resource* res){
-            // return true if the resource already exists
-            return res->name() == resource->name();
-        });
-
-        // if resource does not exist, add it
-        if(duplicate != m_contents.end()){
-            std::cout << "**EXPECTED EXCEPTION: " + resource->name() + " image already exists in the root\n" << std::endl;
-            return *this;
+        // check if the resource is null
+       for(auto& res : m_contents){
+            if(res->name() == resource->name()){
+                throw "Duplicate resource name of resource into directory";
+            }
         }
-            
+
         // update the parent path
-        resource->update_parent_path(this->path());
+        resource->update_parent_path(path());
         // add the resource to the directory
         m_contents.push_back(resource);
 
@@ -84,40 +79,43 @@ namespace seneca{
     // find a resource in the directory
     Resource* Directory::find(const std::string& name, const std::vector<OpFlags>& flags){
         // check if the resource exists
-        for(auto& resource : m_contents){
-            if(resource->name() == name){
-                return resource;
+        bool found = false;
+
+        // find the resource in the directory
+        for(auto resource: flags){
+            if(resource == OpFlags::RECURSIVE){
+                found = true;
+                break;
             }
         }
 
-        // if the resource does not exist, check if directory is recursive
-        if(std::find(flags.begin(), flags.end(), OpFlags::RECURSIVE) != flags.end()){
-            // check if the resource exists in the subdirectories
-            for(auto& resource : m_contents){
-                // if the resource is a directory, find the resource in the subdirectory
-                if(resource->type() == NodeType::DIR){
+        // return the resource if found
+        for(auto& resource : m_contents){
+            // check if the resource is found
+            if(resource->name() == name){
+                return resource;
+            }
+            // check if the resource is a directory
+            if(found && resource->type() == NodeType::DIR){
+                Resource* found = dynamic_cast<Directory*>(resource)->find(name, flags);
+                if(found){
+                    return found;
+                }
+            }
+        }
 
-                    // find the resource in the subdirectory
-                    Resource* found = dynamic_cast<Directory*>(resource)->find(name, flags);
-                    // if the resource is found, return it
-                    if (found) {
-                        return found;
-                    }
-                }// end of if
-            }// end of for
-        }// end of if
-
+        // return null if the resource is not found
         return nullptr;
     }
     
     // delete all resources
     Directory::~Directory(){
-        for(auto& resource : m_contents){
+        for(auto resource : m_contents){
             delete resource;
         }
     }
 
-    void Directory::remove(const std::string& name, const std::vector<OpFlags>& flags = {}){
+    void Directory::remove(const std::string& name, const std::vector<OpFlags>& flags){
         // Find the resource to delete
         auto it = std::find_if(m_contents.begin(), m_contents.end(),
             [&](Resource* res) { return res->name() == name; });
@@ -136,24 +134,21 @@ namespace seneca{
         m_contents.erase(it);
     }
         
-    void Directory::display(std::ostream& os, const std::vector<FormatFlags>& flags = {}) const{
-        os << "Total size: " << size() << " bytes\n";
-        for (auto& resource : m_contents) {
-            // Determine resource type
-            char type = (resource->type() == NodeType::DIR) ? 'D' : 'F';
-
-            // Display resource basic information
-            os << type << " | " << std::setw(15) << std::left << resource->name() << " | ";
-
-            // Display additional information if LONG flag is present
-            if (!flags.empty() && flags[0] == FormatFlags::LONG) {
-                os << std::setw(2) << count() << " | " << std::setw(10) << resource->size() << " bytes | ";
+    void Directory::display(std::ostream& os, const std::vector<FormatFlags>& flags) const{
+        os << "Total size: " << size() << " bytes" << std::endl;
+            for (const auto& resource : m_contents) {
+                os << (resource->type() == NodeType::DIR ? "D" : "F") << " | "
+                   << std::left << std::setw(15) << resource->name() << " | ";
+                if (std::find(flags.begin(), flags.end(), FormatFlags::LONG) != flags.end()) {
+                    if (resource->type() == NodeType::DIR) {
+                        os << std::right << std::setw(2) << resource->count() << " | ";
+                    } else {
+                        os << "   | ";
+                    }
+                    os << std::right << std::setw(10) << resource->size() << " bytes |";
+                }
+                os << std::endl;
             }
-            // Display the path of the resource
-            os << resource->path();
-
-            os << "\n";
-        }
     }
 
 }

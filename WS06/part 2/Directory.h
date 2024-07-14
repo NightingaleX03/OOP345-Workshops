@@ -1,7 +1,7 @@
 /*
 I declare that this submission is the result of my own work and I only copied the code that 
-my professor provided to complete my workshops and assignments. I've used the help of Chatgpt
-to help submit the second part of this workshop
+my professor provided to complete my workshops and assignments. This submitted piece of work 
+has not been shared with any other student or 3rd party content provider.
 
 Sarah Mathew
 smathew32@myseneca.ca
@@ -12,6 +12,7 @@ smathew32@myseneca.ca
 #define SENECA_DIRECTORY_H
 
 #include "Resource.h"
+#include "Flags.h"
 #include <string>
 #include <vector>
 #include <stdexcept>
@@ -22,6 +23,7 @@ namespace seneca{
 
     class Directory : public Resource{
     
+        std::string m_name;
         std::vector<Resource*> m_contents;
 
         Directory(const Directory&) = delete;
