@@ -27,7 +27,11 @@ namespace seneca{
         while(std::getline(file, line)){
             BakedType type;
             //check if the line is bread or pastery
-            type = (line.substr(0,8) == "BREAD") ? BakedType::BREAD : BakedType::PASTERY;
+            std::string sub = line.substr(0,8);
+            sub.erase(sub.find_last_not_of(" \n\r\t")+1);
+            sub.erase(0, sub.find_first_not_of(" \n\r\t"));
+
+            type =  (sub == "Bread") ? BakedType::BREAD : BakedType::PASTERY;
             //get the description, shelf life, stock and price
             std::string description = line.substr(8, 20);
             int shelfLife = std::stoi(line.substr(28, 14));
@@ -47,9 +51,6 @@ namespace seneca{
 
     //display the goods
     void Bakery::showGoods(std::ostream& os) const{
-        //display the header
-        os << "Type           Description            Shelf   Stock      Price\n";
-        os << "****************************************************************\n";
         //display the goods
         for(const auto& good : m_goods){
             os << good << std::endl;
@@ -58,11 +59,11 @@ namespace seneca{
 
     //overload the << operator
     std::ostream& operator<<(std::ostream& os, const BakedGood& goods){
-        os << std::setw(10) << std::left << (goods.type == BakedType::BREAD ? "BREAD" : "PASTERY") << " * " <<
+        os << "* " << std::setw(10) << std::left << (goods.type == BakedType::BREAD ? "Bread" : "Pastry") << " * " <<
         std::setw(20) << std::left << goods.description << " * " << 
-        std::setw(5) << std::right << goods.shelfLife << " * " <<
-        std::setw(5) <<std::right << goods.stock << " * " << 
-        std::setw(5) << std::right << goods.price << " * ";
+        std::setw(5) << std::left << goods.shelfLife << " * " <<
+        std::setw(5) <<std::left << goods.stock << " * " << 
+        std::setw(8) << std::right << std::fixed << std::setprecision(2) << goods.price << " * ";
 
         return os;
     }

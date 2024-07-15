@@ -1,0 +1,13 @@
+I declare that this submission is the result of my own work and I only copied the code that 
+my professor provided to complete my workshops and assignments. This submitted piece of work 
+has not been shared with any other student or 3rd party content provider.
+
+Sarah Mathew
+smathew32@myseneca.ca
+140903238
+
+During Lab 7 I am proud to say I completed it based off of all the previous labs I haven't submitted. I worked hard, read the course notes over and over again and thoroughly understood what I was coding and surprised myself by completing this. 
+
+Some of the STL functions I've used in this workshop are find_if, copy_if, merge, and sort. I've used the find_if to help me in the inStock function to help me find the element depending on the specification given. Next I used copy_if in the outofstock function to copy elements matching the specification over. One of the main STL functions I've used is merge which to bring together two vectors. With also goes hand in hand with sort to help me sort out the vectors depending on the specification given. Overall STL Algorithms makes it easier to read, maintain and helps provide functions to help make it overall easier to read data from files and manipulate the data at hand. If the choice of library was a list compared to a vector, sort wouldn't be the best choice since sort is usually used for random-access sequence where as lists use other sorting methods. 
+
+Overall I'm happy with the amount of work and concepts I've learned in this lab and I look forward to the next one!
