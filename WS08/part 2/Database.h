@@ -37,7 +37,7 @@ namespace seneca {
             static const int max_entries = 20;
             int m_numOfEntries;
             std::array<std::string, max_entries> m_keys;
-            std::array<std::string, max_entries> m_values;
+            std::array<T, max_entries> m_values;
             std::string m_filename;
 
             Database(const std::string& filename);
@@ -45,7 +45,7 @@ namespace seneca {
 
         public:
 
-            static std::shared_ptr<Database> getInstance(const std::string& filename);
+            static std::shared_ptr<Database<T>> getInstance(const std::string& filename);
             Err_Status GetValue(const std::string& key, T& value);
             Err_Status SetValue(const std::string& key, const T& value);
             ~Database();
@@ -53,35 +53,11 @@ namespace seneca {
 
     // template struct for string
     template <>
-    void Database<std::string>::encryptDecrypt(std::string& value){
-        const char secret[]{"secret encryption key"};
-
-        //for each character in value
-        for(char& C: value){
-            //for each character in secret
-            for(char K: secret){
-                C = C ^ K;
-            }
-        }
-    }
+    void Database<std::string>::encryptDecrypt(std::string& value);
     
     // template struct for long long
     template <>
-    void Database<long long>::encryptDecrypt(long long& value){
-        const char secret[]{ "super secret encryption key" };
-        //convert value to char
-        char* B = reinterpret_cast<char*>(&value);
-        //size of long long
-        size_t size = sizeof(long long);
-
-        //for each character in value
-        for(size_t i = 0; i < size; i++){
-            //for each character in secret
-            for (char K : secret) {
-                B[i] ^= K;
-            }
-        }
-    }
+    void Database<long long>::encryptDecrypt(long long& value);
 }
 
 #endif // !SENECA_DATABASE_H
