@@ -1,3 +1,12 @@
+/*
+I declare that this submission is the result of my own work and I only copied the code that 
+my professor provided to complete my workshops and assignments. This submitted piece of work 
+has not been shared with any other student or 3rd party content provider.
+
+Sarah Mathew
+smathew32@myseneca.ca
+140903238
+*/
 // Workshop 9 - Multi-Threading, Thread Class
 
 #include <iostream>
@@ -55,7 +64,20 @@ namespace seneca
 		//         memory for "data".
 		//       The file is binary and has the format described in the specs.
 
+		std::ifstream file(filename, std::ios::binary);
+		
+		//check if file is open
+		if(!file){
+			throw std::runtime_error("Cannot open file '" + filename + "'");
+		}
 
+		//read file
+		file.read(reinterpret_cast<char*>(&total_items), sizeof(total_items));
+		data = new int[total_items];
+		file.read(reinterpret_cast<char*>(data), total_items * sizeof(int));
+
+		//close file
+		file.close();	
 
 
 		std::cout << "Item's count in file '"<< filename << "': " << total_items << std::endl;
@@ -93,7 +115,53 @@ namespace seneca
 	// Save the data into a file with filename held by the argument `target_file`.
 	// Also, read the workshop instruction.
 
+	int ProcessData::operator()(const std::string& filename, double& avg, double& var) {
+		//create threads
+		std::vector<std::thread> threads;
+		
+		//average and variance computation
+		for (int i = 0; i < num_threads; i++){
+			threads.emplace_back(computeAvgFactor, data + p_indices[i], p_indices[i + 1] - p_indices[i], total_items, std::ref(averages[i]));
+		}
 
+		//wait for threads to finish
+		for (auto& t : threads){
+			t.join();
+		}
+
+		// clear threads
+		threads.clear();
+
+		//compute total average
+		avg = std::accumulate(averages, averages + num_threads, 0.0);
+
+		for(int i = 0; i < num_threads; i++){
+			threads.emplace_back(computeVarFactor, data + p_indices[i], p_indices[i + 1] - p_indices[i], total_items, avg, std::ref(variances[i]));
+		}
+
+		//wait for threads to finish
+		for (auto& t : threads){
+			t.join();
+		}
+
+		//clear threads
+		threads.clear();
+
+		//compute total variance
+		var = std::accumulate(variances, variances + num_threads, 0.0);		
+
+		//write to file
+		std::ofstream file(filename, std::ios::binary);
+
+		if (!file){
+			return -1;
+		}
+
+		file.write(reinterpret_cast<const char*>(&total_items), sizeof(total_items));
+		file.write(reinterpret_cast<const char*>(data), total_items * sizeof(int));
+		file.close();
+		return 0;
+	}
 
 
 }

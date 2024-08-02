@@ -1,3 +1,12 @@
+/*
+I declare that this submission is the result of my own work and I only copied the code that 
+my professor provided to complete my workshops and assignments. This submitted piece of work 
+has not been shared with any other student or 3rd party content provider.
+
+Sarah Mathew
+smathew32@myseneca.ca
+140903238
+*/
 // Workshop 9 - Multi-Threading, Thread Class
 
 #include <iostream>
@@ -52,10 +61,23 @@ namespace seneca
 		//         memory for "data".
 		//       The file is binary and has the format described in the specs.
 
+		//open file
+		std::ifstream file(filename, std::ios::binary);
+		
+		//check if file is open
+		if(!file){
+			throw std::runtime_error("Cannot open file '" + filename + "'");
+		}
 
+		//read file
+		file.read(reinterpret_cast<char*>(&total_items), sizeof(total_items));
+		data = new int[total_items];
+		file.read(reinterpret_cast<char*>(data), total_items * sizeof(int));
 
+		//close file
+		file.close();	
 
-
+		//print first 5 and last 3 data items
 		std::cout << "Item's count in file '"<< filename << "': " << total_items << std::endl;
 		std::cout << "  [" << data[0] << ", " << data[1] << ", " << data[2] << ", ... , "
 		          << data[total_items - 3] << ", " << data[total_items - 2] << ", "
@@ -69,9 +91,30 @@ namespace seneca
 
 
 	// TODO Implement operator(). See workshop instructions for details.
+	int ProcessData::operator()(const std::string& filename, double& avg, double& var) {
+		
+		//compute average
+		computeAvgFactor(data, total_items, total_items, avg);
 
+		//compute variance factor
+		computeVarFactor(data, total_items, total_items, avg, var);
 
+		//write to file
+		std::ofstream file(filename, std::ios::binary);
 
+		//check if file is open
+		if(!file){
+			return -1;
+		}
 
+		//write to file
+		file.write(reinterpret_cast<const char*>(&total_items), sizeof(total_items));
+		file.write(reinterpret_cast<const char*>(&data), total_items * sizeof(int));
+
+		//close file
+		file.close();
+		
+		return 0;
+	}
 
 }
